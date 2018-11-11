@@ -8,18 +8,40 @@
 
 import UIKit
 
-let data = [
-    ["London", "Paris", "Berlin"],
-    ["Atlanta", "Boston", "Tucson"],
-    ["Toronto", "Vancouver", "Montreal"]
-]
+struct cellData {
+    var region = String()
+    var cities = [String]()
+}
+
+
+
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
         
     @IBOutlet var tableView: UITableView!
     
+    var tableViewData = [cellData]()
+
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        //table view data will not appear unless the vc is set as tableview datasource
+        tableView.dataSource = self
+        
+        //delegate methods - such as tableView(_:viewForHeaderInSection:) will not appear
+        // unless vc is set as tableView delegate
+        tableView.delegate = self
+        
+        tableViewData = [
+            cellData(region: "Europe", cities: ["London", "Paris", "Berlin"]),
+            cellData(region: "United States", cities: ["Atlanta", "Boston", "Tucson"]),
+            cellData(region: "Canada", cities: ["Toronto", "Vancouver", "Montreal"])
+        ]
+    }
+    
     func numberOfSections(in tableView: UITableView) -> Int {
-        return data.count
+        return tableViewData.count
     }
     
 //    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -37,7 +59,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             let headerView = Bundle.main.loadNibNamed("HeaderView", owner: self, options: nil)?.first as! HeaderView
     
             headerView.backgroundColor = UIColor.lightGray
-            headerView.headerLabel.text = "Section \(section)"
+            let region = tableViewData[section].region
+            headerView.headerLabel.text = region
             return headerView
         }
     
@@ -51,12 +74,12 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return data[section].count
+        return tableViewData[section].cities.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        let cityName = data[indexPath.section][indexPath.row]
+        let cityName = tableViewData[indexPath.section].cities[indexPath.row]
         cell.textLabel?.text = "\(cityName)"
         cell.detailTextLabel?.text = "Section: \(indexPath.section) Row: \(indexPath.row)"
         return cell
@@ -65,16 +88,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 
     
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        //table view data will not appear unless the vc is set as tableview datasource
-        tableView.dataSource = self
-        
-        //delegate methods - such as tableView(_:viewForHeaderInSection:) will not appear
-        // unless vc is set as tableView delegate
-        tableView.delegate = self
-    }
+
     
     
 
