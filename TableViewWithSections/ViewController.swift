@@ -21,7 +21,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     @IBOutlet var tableView: UITableView!
     
     var tableViewData = [cellData]()
-
+    
+ 
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,14 +56,31 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 //        return label
 //    }
     
-        func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-            let headerView = Bundle.main.loadNibNamed("HeaderView", owner: self, options: nil)?.first as! HeaderView
     
-            headerView.backgroundColor = UIColor.lightGray
-            let region = tableViewData[section].region
-            headerView.headerLabel.text = region
-            return headerView
-        }
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = Bundle.main.loadNibNamed("HeaderView", owner: self, options: nil)?.first as! HeaderView
+        
+        //add the ability to recognize when the view for the header section is tapped
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(sectionHeaderTapped(sender:)))
+        headerView.addGestureRecognizer(tapGesture)
+        headerView.isUserInteractionEnabled = true
+        
+        //set the appearance of the header view
+        headerView.backgroundColor = UIColor.lightGray
+        let region = tableViewData[section].region
+        headerView.headerLabel.text = region
+        
+        return headerView
+    }
+    
+    //function called when the custom section header view recognizes a tap gesture
+    @objc func sectionHeaderTapped(sender: UIGestureRecognizer) {
+        print("tapped")
+    }
+    
+////    @objc func tapGestureRecognizer(gestureRecognizer: UIGestureRecognizer) {
+////        print("tapped")
+//    }
     
 //    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
 //        return 50
