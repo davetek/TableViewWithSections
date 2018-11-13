@@ -31,7 +31,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         //table view data will not appear unless the vc is set as tableview datasource
         tableView.dataSource = self
         
-        //delegate methods - such as tableView(_:viewForHeaderInSection:) will not appear
+        //delegate methods - such as tableView(_:viewForHeaderInSection:) will not be executed
         // unless vc is set as tableView delegate
         tableView.delegate = self
         
@@ -73,8 +73,13 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         headerView.isUserInteractionEnabled = true
         
         //add the ability to recognize when the view for the header section is tapped
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(sectionHeaderTapped(sender:)))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTapGestureOn(sender:)))
         headerView.addGestureRecognizer(tapGesture)
+        
+        //add the ability to recognize when the view for the header section is swiped
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeLeftGestureOn(sender:)))
+        swipeLeft.direction = .left
+        headerView.addGestureRecognizer(swipeLeft)
         
         return headerView
     }
@@ -83,7 +88,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     // identifies the section tapped using the tag assigned to the headerView
     // and then changes the value of the 'expanded' property for that section
     // and then reloads the table view
-    @objc func sectionHeaderTapped(sender: UIGestureRecognizer) {
+    @objc func handleTapGestureOn(sender: UIGestureRecognizer) {
         if let sectionTapped = sender.view?.tag {
             print("section \(sectionTapped) tapped")
             if tableViewData[sectionTapped].expanded == true {
@@ -92,6 +97,15 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
                 tableViewData[sectionTapped].expanded = true
             }
             tableView.reloadData()
+        }
+    }
+    
+
+    //function called when the custom section header view recognizes a swipe left gesture
+    // identifies the section tapped using the tag assigned to the headerView
+    @objc func handleSwipeLeftGestureOn(sender: UIGestureRecognizer) {
+        if let sectionSwiped = sender.view?.tag {
+            print("section \(sectionSwiped) swiped left")
         }
     }
     
